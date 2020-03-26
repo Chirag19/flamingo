@@ -7,7 +7,7 @@
         <class>nl.b3p.viewer.config.services.GeoService</class>
         <class>nl.b3p.viewer.config.services.Category</class>
         <properties>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle12gDialect"/>
 
             <!-- Oracle JDBC driver does not work with
             PreparedStatement.setBlob() of PreparedStatement.setClob()
