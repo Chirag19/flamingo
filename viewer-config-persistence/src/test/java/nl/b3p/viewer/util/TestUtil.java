@@ -21,6 +21,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +44,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
+import org.hibernate.jdbc.Work;
 import org.junit.After;
 import org.junit.Before;
 
@@ -138,7 +141,7 @@ public abstract class TestUtil extends LoggingTestUtil {
             Reader f = new InputStreamReader(TestUtil.class.getResourceAsStream("testdata.sql"));
             executeScript(f);
         }
-        Metadata version = entityManager.createQuery("From Metadata where configKey = :v", Metadata.class).setParameter("v", Metadata.DATABASE_VERSION_KEY).getSingleResult();
+        Metadata version = entityManager.createQuery("FROM Metadata where configKey = :v", Metadata.class).setParameter("v", Metadata.DATABASE_VERSION_KEY).getSingleResult();
         originalVersion = version.getConfigValue();
     }
     /**
@@ -147,21 +150,26 @@ public abstract class TestUtil extends LoggingTestUtil {
      * @throws java.io.IOException Thrown when the testdata cannot be found
      * @throws java.sql.SQLException Thrown when the testdata cannot be loaded
      */
-    public void executeScript(Reader f) throws IOException, SQLException {
-        Connection conn = null;
+    public void executeScript(Reader f) {
 
-        try {
-            Session session = (Session) entityManager.getDelegate();
-            conn = (Connection) session.connection();
-            ScriptRunner sr = new ScriptRunner(conn, true, true);
-            sr.runScript(f, false);
-            conn.commit();
-            entityManager.flush();
-        } finally {
-            if (conn != null) {
-                conn.close();
+        Session session = (Session) entityManager.getDelegate();
+        // conn = (Connection) session.connection();
+        session.doWork(new Work() {
+            @Override
+            public void execute(Connection con) throws SQLException {
+                try {
+                    ScriptRunner sr = new ScriptRunner(con, true, true);
+                    sr.runScript(f, false);
+                } finally {
+                    if (con != null) {
+                        con.close();
+                    }
+                }
             }
-        }
+        });
+        entityManager.getTransaction().commit();
+        entityManager.flush();
+        entityManager.close();
     }
     /**
      * Helper function for initializing data.

@@ -32,6 +32,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
+import org.hibernate.annotations.Type;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -65,6 +66,7 @@ public class Application implements Comparable<Application>{
     }));
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Basic(optional = false)
@@ -80,7 +82,7 @@ public class Application implements Comparable<Application>{
     // lang instead of language because language can be a reserved word in some SQL versions
     private String lang;
     @Lob
-    @org.hibernate.annotations.Type(type = "org.hibernate.type.StringClobType")
+    @Type(type = "org.hibernate.type.TextType")
     private String layout;
 
     @ElementCollection
@@ -89,6 +91,7 @@ public class Application implements Comparable<Application>{
     private Map<String, ClobElement> details = new HashMap<String, ClobElement>();
 
     @ManyToOne
+    @JoinColumn(name = "owner")
     private User owner;
 
     @Embedded
@@ -114,6 +117,7 @@ public class Application implements Comparable<Application>{
     private boolean authenticatedRequired;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    //@JoinColumn(name = "root_")
     private Level root;
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "application")

@@ -16,9 +16,7 @@
  */
 package nl.b3p.viewer.config.services;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 /**
  *
@@ -28,15 +26,19 @@ import javax.persistence.ManyToOne;
 public class FeatureTypeRelationKey {
     
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @ManyToOne
+    @JoinColumn(name = "relation")
     private FeatureTypeRelation relation;
         
     @ManyToOne
+    @JoinColumn(name = "left_side")
     private AttributeDescriptor leftSide;
     
     @ManyToOne
+    @JoinColumn(name = "right_side")
     private AttributeDescriptor rightSide;
 
     public FeatureTypeRelationKey(){}
