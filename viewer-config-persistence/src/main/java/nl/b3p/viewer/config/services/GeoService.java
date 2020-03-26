@@ -81,9 +81,10 @@ public abstract class GeoService implements Serializable {
     
     private boolean monitoringEnabled;
     
-    private boolean monitoringStatusOK = true;
+    private boolean monitoringStatusok = true;
 
     @OneToOne(cascade=CascadeType.PERSIST)
+    @JoinColumn(name = "top_layer")
     private Layer topLayer;
 
     @ElementCollection
@@ -196,12 +197,12 @@ public abstract class GeoService implements Serializable {
         this.authorizationsModified = authorizationsModified;
     }
 
-    public boolean isMonitoringStatusOK() {
-        return monitoringStatusOK;
+    public boolean isMonitoringStatusok() {
+        return monitoringStatusok;
     }
 
-    public void setMonitoringStatusOK(boolean monitoringStatusOK) {
-        this.monitoringStatusOK = monitoringStatusOK;
+    public void setMonitoringStatusok(boolean monitoringStatusok) {
+        this.monitoringStatusok = monitoringStatusok;
     }
 
     public Map<String, ClobElement> getDetails() {
