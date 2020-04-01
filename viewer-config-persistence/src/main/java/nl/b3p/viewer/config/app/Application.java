@@ -145,8 +145,10 @@ public class Application implements Comparable<Application>{
     private List<StartLevel> startLevels = new ArrayList<StartLevel>();
 
     @ElementCollection
+    @CollectionTable(joinColumns = @JoinColumn(name = "application"))
     @Column(name = "role_name")
     private Set<String> readers = new HashSet<String>();
+
     private String projectionCode;
 
     // <editor-fold defaultstate="collapsed" desc="getters and setters">

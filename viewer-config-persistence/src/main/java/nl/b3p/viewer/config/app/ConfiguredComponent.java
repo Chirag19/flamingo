@@ -50,6 +50,7 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
     private String className;
 
     @ElementCollection
+    @CollectionTable(joinColumns = @JoinColumn(name = "configured_component"))
     private Map<String,String> details = new HashMap<String,String>();
 
     @ManyToOne(optional=false)
@@ -57,6 +58,7 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
     private Application application;
 
     @ElementCollection
+    @CollectionTable(joinColumns = @JoinColumn(name = "configured_component"))
     @Column(name="role_name")
     private Set<String> readers = new HashSet<String>();
 

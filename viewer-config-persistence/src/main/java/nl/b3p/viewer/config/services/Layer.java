@@ -119,9 +119,7 @@ public class Layer implements Cloneable, Serializable {
     private Set<CoordinateReferenceSystem> crsList = new HashSet<>();
 
     @ElementCollection
-    @CollectionTable(
-        joinColumns = @JoinColumn(name = "layer")
-    )
+    @CollectionTable(joinColumns = @JoinColumn(name = "layer"))
     private Map<CoordinateReferenceSystem,BoundingBox> boundingBoxes = new HashMap<>();
 
     @ManyToOne(fetch=FetchType.LAZY)
@@ -143,18 +141,30 @@ public class Layer implements Cloneable, Serializable {
     private SimpleFeatureType featureType;
 
     @ElementCollection
+    @JoinTable(
+        joinColumns=@JoinColumn(name = "layer", referencedColumnName = "id")
+    )
     @Column(name="keyword")
     private Set<String> keywords = new HashSet<>();
 
     @ElementCollection
+    @JoinTable(
+        joinColumns=@JoinColumn(name = "layer", referencedColumnName = "id")
+    )
     @Column(name="role_name")
     private Set<String> readers = new HashSet<>();
 
     @ElementCollection
+    @JoinTable(
+        joinColumns=@JoinColumn(name = "layer", referencedColumnName = "id")
+    )
     @Column(name="role_name")
     public Set<String> writers = new HashSet<>();
 
     @ElementCollection
+    @JoinTable(
+        joinColumns=@JoinColumn(name = "layer", referencedColumnName = "id")
+    )
     @Column(name = "role_name")
     public Set<String> preventGeomEditors = new HashSet<>();
 
