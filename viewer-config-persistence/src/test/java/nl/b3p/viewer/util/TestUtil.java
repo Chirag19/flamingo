@@ -163,6 +163,10 @@ public abstract class TestUtil extends LoggingTestUtil {
             });
         } finally {
             entityManager.flush();
+            if(entityManager.getTransaction().isActive()){
+                entityManager.getTransaction().commit();
+                entityManager.getTransaction().begin();
+            }
         }
     }
     /**
