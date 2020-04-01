@@ -21,8 +21,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -138,8 +136,6 @@ public abstract class TestUtil extends LoggingTestUtil {
 
         Application app = entityManager.find(Application.class, applicationId);
         if( app == null) {
-            int a = 0;
-            Reader schemaExport = new InputStreamReader(TestUtil.class.getResourceAsStream("hsql-schema-export.sql"));
             Reader f = new InputStreamReader(TestUtil.class.getResourceAsStream("testdata.sql"));
             executeScript(f);
         }
@@ -156,22 +152,18 @@ public abstract class TestUtil extends LoggingTestUtil {
 
         Session session = (Session) entityManager.getDelegate();
         // conn = (Connection) session.connection();
-        session.doWork(new Work() {
-            @Override
-            public void execute(Connection con) throws SQLException {
-                try {
+        try {
+            session.doWork(new Work() {
+                @Override
+                public void execute(Connection con) throws SQLException {
                     ScriptRunner sr = new ScriptRunner(con, true, true);
                     sr.runScript(f, false);
-                } finally {
-                    if (con != null) {
-                        con.close();
-                    }
+                    con.commit();
                 }
-            }
-        });
-        entityManager.getTransaction().commit();
-        entityManager.flush();
-        entityManager.close();
+            });
+        } finally {
+            entityManager.flush();
+        }
     }
     /**
      * Helper function for initializing data.
